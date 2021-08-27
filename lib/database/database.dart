@@ -20,7 +20,7 @@ class AppDatabase extends _$AppDatabase {
   Stream<List<Task>> watchAllTask() => select(tasks).watch();
   Future insertNewTasks(TasksCompanion task) => into(tasks).insert(task);
   Future deleteTasks(Task task) => delete(tasks).delete(task);
-  Future updateOrder(Task task) => update(tasks).replace(task);
+  Future updateTask(Task task) => update(tasks).replace(task);
 }
 
 // @UseDao(tables: [Tasks])

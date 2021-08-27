@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:todo_application_official/database/database.dart';
+import 'package:todo_application_official/main.dart';
 import 'todo_homepage.dart';
 
 class Addpage extends StatefulWidget {
@@ -34,13 +35,14 @@ class _AddpageState extends State<Addpage> {
         title: Padding(
           padding: const EdgeInsets.only(left: 60.0, right: 0),
           child: Text(
-            'Todo-tasks',
+            'Todo',
             style: GoogleFonts.pacifico(fontSize: 35),
           ),
         ),
       ),
+
+      //This will make whole values scrollable and it wont cause error
       body: SingleChildScrollView(
-        //This will make whole values scrollable and it wont cause error
         //while keyboards are opened.
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -74,12 +76,6 @@ class _AddpageState extends State<Addpage> {
                     // -------------------------title text field---------------------------------
                     child: TextFormField(
                       controller: titlecontroller,
-                      // onChanged: (String titleText) {
-                      //   myTitle = titleText;
-                      // },
-                      // onSaved: (text){
-                      //   todoList.add(text);
-                      // },
                       onTap: () {
                         FocusScope.of(context)
                             .unfocus(); // This will close on screen keyboard when click on surface.
@@ -98,14 +94,6 @@ class _AddpageState extends State<Addpage> {
                           horizontal: 20.0,
                         ),
                       ),
-                      //  validator: (input) => input.trim().isEmpty
-                      //   ? 'Empty...! Please enter the title'
-                      //   :null,
-                      // onChanged: (String value) {
-                      //   input = value;
-                      // },
-                      // onSaved: (input) => title = input!,
-                      // initialValue: title,
                     ),
                   ),
                   Padding(
@@ -147,30 +135,19 @@ class _AddpageState extends State<Addpage> {
                     style: ElevatedButton.styleFrom(primary: Colors.green),
                     onPressed: () {
                       setState(() {
-                        AppDatabase().insertNewTasks(TasksCompanion.insert(
+                        appDatabase!.insertNewTasks(TasksCompanion.insert(
                             title: titlecontroller.text,
                             description: descriptioncontroller.text));
-                        // getItemAndNavigate(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Homepage()),
-                        );
+
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(builder: (context) => Homepage()),
+                        // );
+                        Navigator.pop(context);
                         titlecontroller.clear();
                         descriptioncontroller.clear();
                       });
-                    }
-                    // => getItemAndNavigate(context),
-
-                    // todoList.add(titlecontroller.text);
-                    // print('$titlecontroller');
-                    // print('$descriptioncontroller');
-                    // titlecontroller.clear();
-                    // descriptioncontroller.clear();
-                    // todoList.add(descriptioncontroller.text);
-                    // Navigator.pop(context);
-                    // Navigator.of(context).pop();
-
-                    ),
+                    }),
 
                 // cancel button----------------------------------------------------
                 ElevatedButton(
@@ -191,5 +168,3 @@ class _AddpageState extends State<Addpage> {
     );
   }
 }
-
-// _submit() {}

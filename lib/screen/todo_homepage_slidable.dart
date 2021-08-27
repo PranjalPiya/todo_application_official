@@ -38,28 +38,28 @@
 //           Padding(
 //             padding: const EdgeInsets.all(12.0),
 //             child: IconSlideAction(
-//               caption: 'Delete',
-//               color: Colors.red,
-//               icon: Icons.delete,
-//               onTap: () {
-//                 setState(() {});
-//               },
-//               foregroundColor: Colors.white,
-//             ),
+            //   caption: 'Delete',
+            //   color: Colors.red,
+            //   icon: Icons.delete,
+            //   onTap: () {
+            //     setState(() {});
+            //   },
+            //   foregroundColor: Colors.white,
+            // ),
 //           ),
 //         ],
-//         actions: [
-//           Padding(
-//             padding: const EdgeInsets.all(12.0),
-//             child: IconSlideAction(
-//               caption: 'Update',
-//               color: Colors.green,
-//               icon: Icons.edit,
-//               foregroundColor: Colors.white,
-//               onTap: () {},
-//             ),
-//           ),
-//         ],
+        // actions: [
+        //   Padding(
+        //     padding: const EdgeInsets.all(12.0),
+        //     child: IconSlideAction(
+        //       caption: 'Update',
+        //       color: Colors.green,
+        //       icon: Icons.edit,
+        //       foregroundColor: Colors.white,
+        //       onTap: () {},
+        //     ),
+        //   ),
+        // ],
 //       ),
 //     );
 //   }
