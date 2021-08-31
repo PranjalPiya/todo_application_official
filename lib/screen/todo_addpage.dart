@@ -1,43 +1,63 @@
+// import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:moor/moor.dart' as moor;
 import 'package:todo_application_official/database/database.dart';
 import 'package:todo_application_official/main.dart';
 import 'todo_homepage.dart';
 
 class Addpage extends StatefulWidget {
-  Addpage({Key? key}) : super(key: key);
+  Task? task;
+  String? type;
+  Addpage({Key? key, this.task, this.type}) : super(key: key);
 
   @override
   _AddpageState createState() => _AddpageState();
 }
 
 class _AddpageState extends State<Addpage> {
-  // final _formvalid = GlobalKey<FormState>();
+  //
+  String? title;
+  String? description;
+
+  final _formvalid = GlobalKey<FormState>();
   TextEditingController titlecontroller = TextEditingController();
   TextEditingController descriptioncontroller = TextEditingController();
 
-  // getItemAndNavigate(BuildContext context) {
-  //   Navigator.push(
-  //       context,
-  //       MaterialPageRoute(
-  //           builder: (context) => Homepage(
-  //                 titleHolder: titlecontroller.text,
-  //                 descriptionHolder: descriptioncontroller.text,
-  //               )));
-  // }
+  //checks
+  checker() {
+    if (widget.type == 's') {
+      titlecontroller.text = widget.task!.title;
+      descriptioncontroller.text = widget.task!.description;
+    }
+  }
+
+  //calling method
+  @override
+  void initState() {
+    checker();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    titlecontroller.dispose();
+    descriptioncontroller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.red[800],
-        title: Padding(
-          padding: const EdgeInsets.only(left: 60.0, right: 0),
-          child: Text(
-            'Todo',
-            style: GoogleFonts.pacifico(fontSize: 35),
-          ),
+        //center title is a property which fix the title in the center.
+        centerTitle: true,
+        backgroundColor: Colors.purple[800],
+        title: Text(
+          'Todo',
+          style: GoogleFonts.pacifico(fontSize: 35),
         ),
       ),
 
@@ -53,8 +73,10 @@ class _AddpageState extends State<Addpage> {
                 padding: const EdgeInsets.all(10),
                 child: Center(
                   child: Text(
-                    'Add your Task',
-                    style: GoogleFonts.oswald(fontSize: 25),
+                    'Write your Task',
+                    style: GoogleFonts.averiaSerifLibre(
+                      fontSize: 27,
+                    ),
                   ),
                 ),
               ),
@@ -66,13 +88,12 @@ class _AddpageState extends State<Addpage> {
 
             //Form will strat from here
             Form(
-              // key: _formvalid,
+              key: _formvalid,
               child: Column(
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 20),
-
                     // -------------------------title text field---------------------------------
                     child: TextFormField(
                       controller: titlecontroller,
@@ -86,14 +107,29 @@ class _AddpageState extends State<Addpage> {
                       ),
                       decoration: InputDecoration(
                         labelText: 'Title',
+                        labelStyle: GoogleFonts.oswald(
+                          color: Colors.black,
+                        ),
                         hintText: 'Enter your Title',
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.red)),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide(color: Colors.purple),
+                        ),
                         contentPadding: EdgeInsets.symmetric(
-                          vertical: 30.0,
+                          vertical: 20.0,
                           horizontal: 20.0,
                         ),
                       ),
+                      onSaved: (value) {
+                        title = value;
+                      },
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter the Title';
+                        } else {
+                          return null;
+                        }
+                      },
                     ),
                   ),
                   Padding(
@@ -110,17 +146,28 @@ class _AddpageState extends State<Addpage> {
                       ),
                       decoration: InputDecoration(
                         labelText: 'Description',
+                        labelStyle: GoogleFonts.oswald(
+                          color: Colors.black,
+                        ),
                         hintText: 'Enter your description',
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.red)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.purple),
+                            borderRadius: BorderRadius.circular(15)),
                         contentPadding: EdgeInsets.symmetric(
                           vertical: 30.0,
                           horizontal: 20.0,
                         ),
                       ),
-                      // onFieldSubmitted: (value) {
-                      //   print("Field value: $value");
-                      // },
+                      onSaved: (value) {
+                        description = value;
+                      },
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter the Description';
+                        } else {
+                          return null;
+                        }
+                      },
                     ),
                   )
                 ],
@@ -131,22 +178,25 @@ class _AddpageState extends State<Addpage> {
               children: [
                 //-----------------------submit button------------------------
                 ElevatedButton(
-                    child: Text('Submit'),
+                    child: Text(widget.type == 's' ? 'Update' : 'Submit'),
                     style: ElevatedButton.styleFrom(primary: Colors.green),
                     onPressed: () {
-                      setState(() {
-                        appDatabase!.insertNewTasks(TasksCompanion.insert(
-                            title: titlecontroller.text,
-                            description: descriptioncontroller.text));
-
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(builder: (context) => Homepage()),
-                        // );
+                      if (_formvalid.currentState!.validate()) {
+                        _formvalid.currentState!.save();
+                        if (widget.type == 's') {
+                          var task = TasksCompanion(
+                              id: moor.Value(widget.task!.id),
+                              title: moor.Value(title!),
+                              description: moor.Value(description!));
+                          print(task);
+                          appDatabase!.updateTask(task);
+                        } else {
+                          appDatabase!.insertNewTasks(TasksCompanion.insert(
+                              title: titlecontroller.text,
+                              description: descriptioncontroller.text));
+                        }
                         Navigator.pop(context);
-                        titlecontroller.clear();
-                        descriptioncontroller.clear();
-                      });
+                      }
                     }),
 
                 // cancel button----------------------------------------------------

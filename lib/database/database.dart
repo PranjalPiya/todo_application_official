@@ -19,8 +19,14 @@ class AppDatabase extends _$AppDatabase {
   Future<List<Task>> getAllTask() => select(tasks).get();
   Stream<List<Task>> watchAllTask() => select(tasks).watch();
   Future insertNewTasks(TasksCompanion task) => into(tasks).insert(task);
-  Future deleteTasks(Task task) => delete(tasks).delete(task);
-  Future updateTask(Task task) => update(tasks).replace(task);
-}
 
-// @UseDao(tables: [Tasks])
+  Future? deleteTask(int id) {
+    return (delete(tasks)..where((tbl) => tbl.id.equals(id))).go();
+  }
+
+  // Future? updateTask(int id) {
+  //   return (update(tasks)..where((tbl) => tbl.id.equals(id))).replace(tasks);
+  // }
+
+  Future updateTask(TasksCompanion task) => update(tasks).replace(task);
+}
